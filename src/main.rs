@@ -1,8 +1,9 @@
 
 fn make_card(index : usize, number : &u32, pairs : &Vec<(u32, u32)>)
 {
+    let mut bg_col = "#218d67";
     if index % 2 == 0 {
-        print!("*");
+        bg_col = "#bed0b5";
     }
     print!("{} -> ", number);
     for (a,b) in pairs {
@@ -11,27 +12,45 @@ fn make_card(index : usize, number : &u32, pairs : &Vec<(u32, u32)>)
     println!();
 
     use svg::Document;
-    use svg::node::element::Path;
-    use svg::node::element::path::Data;
+    use svg::node::element;
+    use svg::node::Text;
 
-    let data = Data::new()
-        .move_to((10, 10))
-        .line_by((0, 50))
-        .line_by((50, 0))
-        .line_by((0, -50))
-        .close();
+    let back = format!("{}", number);
 
-    let path = Path::new()
-        .set("fill", "none")
-        .set("stroke", "black")
-        .set("stroke-width", 3)
-        .set("d", data);
+    let white = element::Rectangle::new()
+        .set("width", "100%")
+        .set("height", "100%")
+        .set("fill", "white");
+
+    let background = element::Rectangle::new()
+        .set("width", "37mm")
+        .set("height", "59mm")
+        .set("x", "2mm")
+        .set("y", "2mm")
+        .set("rx", "4mm")
+        .set("ry", "4mm")
+        .set("fill", bg_col);
+
+    let front = element::Text::new()
+        .set("text-anchor", "middle")
+        .set("dy", ".4em")
+        .set("x", "50%")
+        .set("y", "50%")
+        .set("font-size", 64.0)
+        .set("font-weight", "bold")
+        .set("font-family", "kalimati")
+        .set("fill", "#0e465b")
+        .add(Text::new(&back));
 
     let document = Document::new()
-        .set("viewBox", (0, 0, 70, 70))
-        .add(path);
+        .set("style", "background: red")
+        .set("width", "41mm")
+        .set("height", "63mm")
+        .add(white)
+        .add(background)
+        .add(front);
 
-    let file_path = format!("card_{:02}.svg", index);
+    let file_path = format!("cards/card_{:02}.svg", index);
     svg::save(&file_path, &document).unwrap();
 }
 
@@ -59,6 +78,7 @@ fn main() {
 
     for (i, (k, p)) in flat.iter().enumerate() {
         make_card(i, k, &p);
+        //break;
     }
 
     println!("length = {}", flat.len());
