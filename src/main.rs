@@ -1,6 +1,15 @@
 
+fn make_card(number : &u32, pairs : &Vec<(u32, u32)>)
+{
+    print!("{} -> ", number);
+    for (a,b) in pairs {
+        print!("[{0} {1}] ", a, b);
+    }
+    println!();
+}
 
 fn main() {
+    // Build the pair groupings
     let mut pairs = std::collections::HashMap::<u32, Vec<(u32, u32)>>::new();
 
     let mut add_pair = |i, j| {
@@ -22,13 +31,10 @@ fn main() {
     flat.sort();
 
     for (k, p) in flat.iter() {
-        print!("{} -> ", k);
-        for (a,b) in p {
-            print!("[{0} {1}] ", a, b);
-        }
-        println!();
+        make_card(k, &p);
     }
 
-
     println!("length = {}", flat.len());
+
+    // Now build the svg cards
 }
