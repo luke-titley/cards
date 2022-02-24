@@ -31,6 +31,12 @@ fn make_card(index : usize, number : &u32, pairs : &Vec<(u32, u32)>)
         .set("ry", "4mm")
         .set("fill", bg_col);
 
+    let icon_path = format!("cards/icon_{:02}.png", index);
+    let img = element::Image::new()
+        .set("href", icon_path.as_str())
+        .set("x", "2mm")
+        .set("y", "2mm");
+
     let front = element::Text::new()
         .set("text-anchor", "middle")
         .set("dy", ".4em")
@@ -48,7 +54,13 @@ fn make_card(index : usize, number : &u32, pairs : &Vec<(u32, u32)>)
         .set("height", "63mm")
         .add(white)
         .add(background)
+        .add(img)
         .add(front);
+
+    let icon = identicon_rs::Identicon::new(back)
+        .size(4).unwrap()
+        .scale(128).unwrap();
+    icon.save_image(&icon_path);
 
     let file_path = format!("cards/card_{:02}.svg", index);
     svg::save(&file_path, &document).unwrap();
@@ -78,7 +90,7 @@ fn main() {
 
     for (i, (k, p)) in flat.iter().enumerate() {
         make_card(i, k, &p);
-        //break;
+        break;
     }
 
     println!("length = {}", flat.len());
